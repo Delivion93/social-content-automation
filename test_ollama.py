@@ -1,11 +1,7 @@
-from langchain_ollama import ChatOllama
+from services.llm_service import ask
 
-llm = ChatOllama(
-    model="qwen3:8b"
+result = ask(
+    "Genera una idea de campaña para una cafetería dirigida a estudiantes."
 )
 
-response = llm.invoke(
-    "Generate a short marketing idea for a coffee shop."
-)
-
-print(response.content)
+print(result)

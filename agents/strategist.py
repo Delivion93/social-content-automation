@@ -1,55 +1,111 @@
 from services.llm_service import ask
+from pydantic import BaseModel
+import json
 
-def generar_concepto(producto: str, audiencia: str):
+
+# --------- Pydantic Output Contract ---------
+
+class StrategicConcept(BaseModel):
+    campaign_name: str
+    concept: str
+    tone: str
+
+
+# --------- Strategist Agent ---------
+
+def generar_concepto(producto: str, audiencia: str, descripcion_marca: str):
+
     prompt = f"""
-Eres un Director de Estrategia de Marketing Digital y Redes Sociales con más de 15 años de experiencia liderando campañas premiadas para marcas globales. Has trabajado con startups y Fortune 500, y tu especialidad es convertir propuestas de valor complejas en conceptos creativos que generan conversión y engagement.
+Eres el Strategist Agent dentro de un sistema de marketing automatizado multi-agente basado en LangGraph.
+
+Tu salida será consumida directamente por el Copywriter Agent, sin modificaciones intermedias.
+Esto significa que tu respuesta debe ser:
+- completamente autocontenida
+- coherente
+- estructurada
+- lista para producción
+
+El Copywriter no verá el prompt ni contexto adicional, solo tu salida.
+
 ---
-## CONTEXTO DE LA TAREA
-Tu misión es analizar la información proporcionada sobre un producto/servicio y desarrollar los pilares estratégicos de una campaña de marketing digital. El output será utilizado por equipos de creativos, media buyers y community managers para ejecutar la campaña.
+
+## CONTEXTO DEL PROYECTO
+
+Producto o servicio: {producto}
+Público objetivo: {audiencia}
+Descripción de la marca: {descripcion_marca}
+
 ---
-## DATOS DE ENTRADA
-- **Producto/Servicio:** {producto}
-- **Público Objetivo:** {audiencia}
-- **Descripción de la Marca:** {descripcion_marca}
+
+## OBJETIVO ESTRATÉGICO
+
+Tu misión es diseñar el núcleo creativo de una campaña de marketing digital que pueda escalarse a múltiples canales (Instagram, Facebook, LinkedIn) sin perder coherencia.
+
+Debes identificar:
+- qué motivación profunda conecta con el público objetivo
+- qué tensión, deseo o problema resuelve el producto
+- qué posicionamiento creativo lo diferencia claramente de campañas genéricas del sector
+
 ---
-## PROCESO DE ANÁLISIS (Razona paso a paso antes de generar el output)
-Antes de escribir tu respuesta final, analiza internamente:
-1. **Identificación de insights:** ¿Qué dolor resuelve el producto? ¿Qué deseo satisface? ¿Cuál es el diferenciador clave frente a alternativas?
-2. **Conexión emocional:** ¿Qué emoción debe evocar la campaña para resonar con la audiencia? (aspiración, seguridad, pertenencia, libertad, etc.)
-3. **Territorio de marca:** ¿En qué espacio conceptual puede posicionarse esta marca de forma única y defendible?
-4. **Tensión cultural:** ¿Existe alguna tensión o tendencia social/cultural que la campaña pueda aprovechar para ser relevante?
+
+## PROCESO (IMPORTANTE)
+
+Antes de responder en el formato final, realiza un análisis interno breve (2-3 frases máximo, sin incluirlo en el JSON) sobre:
+- insight principal del público objetivo
+- ángulo creativo diferencial de la campaña
+
 ---
-## CRITERIOS DE CALIDAD PARA CADA ELEMENTO
-### Nombre de la Campaña
-- Memorable y fácil de pronunciar (máximo 5 palabras)
-- Funciona como hashtag (#NombreCampaña)
-- Evoca la promesa central sin ser literal
-- Diferenciado de campañas existentes en el sector
-### Concepto Principal (Big Idea)
-- Resume en una oración la tensión que resuelve o la transformación que promete
-- Es lo suficientemente amplio para adaptarse a múltiples formatos y plataformas
-- Tiene potencial para generar contenido serializado
-- Conecta el beneficio funcional con un beneficio emocional
-### Tono de Comunicación
-- 3 adjetivos jerárquicos (el primero domina, los otros matizan)
-- Incluye: qué SÍ hacer y qué NO hacer en la comunicación
-- Referencia de "voz" comparable (ej. "Como si fuera un amigo experto, no un vendedor")
+
+## OUTPUT REQUERIDO
+
+Define los siguientes elementos:
+
+### 1. campaign_name
+Nombre de campaña:
+- máximo 5 palabras
+- memorable y específico
+- evita clichés publicitarios genéricos ("Innova Ya", "Transforma tu vida", etc.)
+- debe sentirse propio de la marca
+
+### 2. concept
+Concepto principal:
+- 1-2 frases claras
+- debe expresar la idea central de la campaña
+- debe incluir tanto beneficio funcional como emocional
+- suficientemente flexible para adaptarse a distintos formatos de contenido
+
+### 3. tone
+Tono de comunicación:
+- 2 a 4 adjetivos concretos (evita combinaciones vagas tipo “profesional y cercano”)
+- una breve justificación de por qué ese tono encaja con esta audiencia
+- referencia implícita de estilo (ej: cómo debe “sonar” la marca)
+
 ---
-## FORMATO DE SALIDA
-Responde ÚNICAMENTE con el siguiente objeto JSON. Sin texto antes ni después. Sin bloques de código markdown.
-{
-    "campaign_name": "[Nombre creativo de la campaña]",
-    "concept": "[Big Idea en 1-2 oraciones] + [Explicación del ángulo estratégico en 2-3 oraciones adicionales]",
-    "tone": "[Adjetivo1], [Adjetivo2], [Adjetivo3]. [Guía de estilo: qué hacer]. [Qué evitar]. [Referencia de voz comparable]."
-}
+
+## FORMATO DE SALIDA (OBLIGATORIO)
+
+Responde ÚNICAMENTE con este JSON válido, sin explicaciones, sin markdown, sin texto adicional:
+{{
+  "campaign_name": "...",
+  "concept": "...",
+  "tone": "..."
+}}
+
 ---
-## EJEMPLO DE OUTPUT ESPERADO
-Para una app de meditación dirigida a ejecutivos estresados:
-{
-    "campaign_name": "Tu Pausa de Poder",
-    "concept": "El éxito no es correr más rápido, es saber cuándo parar. Reposicionamos la meditación no como escape del trabajo, sino como herramienta de alto rendimiento. Cada pausa es una inversión en claridad mental y mejores decisiones.",
-    "tone": "Ejecutivo, Empático, Aspiracional. Hablar como un mentor que entiende la presión, no como un gurú espiritual. Usar lenguaje de negocios aplicado al bienestar. Evitar clichés de wellness y terminología new age. Voz comparable: como un coach de CEOs que también medita."
-}
+
+## REGLAS CRÍTICAS
+
+- No inventes datos fuera del contexto proporcionado
+- No uses jerga vacía de marketing
+- No repitas fórmulas genéricas entre campañas
+- Prioriza claridad estratégica sobre creatividad superficial
+- Responde siempre en español
 """
 
-    return ask(prompt)
+    response = ask(prompt)
+
+    try:
+        data = json.loads(response)
+        return StrategicConcept(**data)
+    except Exception as e:
+        raise ValueError(f"Error parsing LLM response: {response}") from e

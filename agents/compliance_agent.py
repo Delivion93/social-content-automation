@@ -1,3 +1,4 @@
+from graph.state import ContentState
 from schemas.compliance import ComplianceReport
 
 MIN_LENGTH = 50
@@ -8,6 +9,19 @@ BANNED_WORDS = [
     "sin riesgo"
 ]
 
+
+def compliance_node(state: ContentState):
+
+    report = validate_content(
+        instagram_post=state["instagram_post"],
+        facebook_post=state["facebook_post"],
+        linkedin_post=state["linkedin_post"]
+    )
+
+    return {
+        "approved": report.approved,
+        "feedback": report.feedback
+    }
 
 def validate_content(
     instagram_post: str,

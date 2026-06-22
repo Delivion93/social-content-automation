@@ -1,3 +1,4 @@
+from graph.state import ContentState
 from services.llm_service import ask
 from pydantic import BaseModel
 import json
@@ -10,6 +11,19 @@ class StrategicConcept(BaseModel):
     concept: str
     tone: str
 
+def strategist_node(state: ContentState):
+
+    result = generar_concepto(
+        producto=state["product"],
+        audiencia=state["audience"],
+        descripcion_marca=state["brand_description"]
+    )
+
+    return {
+        "campaign_name": result.campaign_name,
+        "concept": result.concept,
+        "tone": result.tone
+    }
 
 # --------- Strategist Agent ---------
 

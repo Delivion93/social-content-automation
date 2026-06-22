@@ -4,22 +4,14 @@ from graph.state import ContentState
 
 # Тимчасові заглушки
 from agents.strategist_agent import strategist_node
+from agents.copywriter_agent import copywriter_node
 from agents.compliance_agent import compliance_node
-
-
-def mock_copywriter_node(state: ContentState):
-    return {
-        "instagram_post": "Mock Instagram Post",
-        "facebook_post": "Mock Facebook Post",
-        "linkedin_post": "Mock LinkedIn Post"
-    }
-
 
 builder = StateGraph(ContentState)
 
 # Nodes
 builder.add_node("strategist", strategist_node)
-builder.add_node("copywriter", mock_copywriter_node)
+builder.add_node("copywriter", copywriter_node)
 builder.add_node("compliance", compliance_node)
 
 # Flow

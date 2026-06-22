@@ -1,4 +1,4 @@
-from agents.strategist import generar_concepto
+from agents.strategist_agent import generar_concepto
 
 result = generar_concepto(
     producto="Cafetería de especialidad",

@@ -1,6 +1,11 @@
-langchain
-langchain-ollama
-pydantic
-python-dotenv
 fastapi
 uvicorn
+
+langchain
+langchain-ollama
+langgraph
+
+pydantic
+python-dotenv
+
+jinja2

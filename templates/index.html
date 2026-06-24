@@ -19,11 +19,10 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 30px;
         }
 
         .container {
-            width: 1000px;
+            width: 1200px;
             max-width: 95%;
         }
 
@@ -83,31 +82,6 @@
             color: #aaa;
         }
 
-        .section {
-            margin-top: 20px;
-        }
-
-        .content-box {
-            background: #2a2a2a;
-            padding: 15px;
-            border-radius: 10px;
-            white-space: pre-wrap;
-        }
-
-        #results {
-            display: none;
-        }
-
-        .approved {
-            color: #22c55e;
-            font-weight: bold;
-        }
-
-        .rejected {
-            color: #ef4444;
-            font-weight: bold;
-        }
-
         #form-container {
             display: block;
         }
@@ -118,10 +92,11 @@
             padding: 80px 20px;
         }
 
-        #chat-container {
+       #chat-container {
             display: none;
-            height: 80vh;
+            height: 95vh;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .loader {
@@ -144,9 +119,10 @@
             }
         }
 
-        .chat-messages {
+        #chat-messages {
             flex: 1;
             overflow-y: auto;
+            min-height: 0;
             padding: 20px;
         }
 
@@ -156,6 +132,20 @@
             border-radius: 10px;
             margin-bottom: 15px;
             white-space: pre-wrap;
+
+            width: 100%;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            border-top: 1px solid #333;
+            flex-shrink: 0;
+        }
+
+        #chat-input {
+            flex: 1;
         }
     </style>
 </head>
@@ -200,7 +190,21 @@
 
     <h1>💬 Campaign Assistant</h1>
 
-    <div id="chat-messages"></div>
+<div id="chat-messages"></div>
+
+<div class="chat-input-area">
+
+    <input
+        type="text"
+        id="chat-input"
+        placeholder="Escribe una modificación..."
+    >
+
+    <button onclick="sendChatMessage()">
+        Enviar
+    </button>
+
+</div>
 
 </div>
 </div>
@@ -259,7 +263,7 @@ function showResult(data) {
 
     document.getElementById(
         "chat-container"
-    ).style.display = "block";
+    ).style.display = "flex";
 
     const chat =
         document.getElementById(
@@ -268,48 +272,49 @@ function showResult(data) {
 
     chat.innerHTML = "";
 
-    addMessage(
-        chat,
-        "📢 Campaign Name\n\n" +
-        data.campaign_name
-    );
+    const campaignResult = `
+📢 Campaign Name
 
-    addMessage(
-        chat,
-        "🎯 Concept\n\n" +
-        data.concept
-    );
+${data.campaign_name}
 
-    addMessage(
-        chat,
-        "🎨 Tone\n\n" +
-        data.tone
-    );
+────────────────────────
 
-    addMessage(
-        chat,
-        "📸 Instagram\n\n" +
-        data.instagram_post
-    );
+🎯 Concept
 
-    addMessage(
-        chat,
-        "📘 Facebook\n\n" +
-        data.facebook_post
-    );
+${data.concept}
 
-    addMessage(
-        chat,
-        "💼 LinkedIn\n\n" +
-        data.linkedin_post
-    );
+────────────────────────
 
-    addMessage(
-        chat,
-        data.approved
-            ? "✅ Compliance Approved"
-            : "❌ Compliance Rejected"
-    );
+🎨 Tone
+
+${data.tone}
+
+────────────────────────
+
+📸 Instagram
+
+${data.instagram_post}
+
+────────────────────────
+
+📘 Facebook
+
+${data.facebook_post}
+
+────────────────────────
+
+💼 LinkedIn
+
+${data.linkedin_post}
+
+────────────────────────
+
+${data.approved
+    ? "✅ Compliance Approved"
+    : "❌ Compliance Rejected"}
+`;
+
+    addMessage(chat, campaignResult);
 }
 
 function addMessage(chat, text) {
@@ -322,6 +327,31 @@ function addMessage(chat, text) {
     msg.textContent = text;
 
     chat.appendChild(msg);
+
+    chat.scrollTop = chat.scrollHeight;
+}
+
+async function sendChatMessage() {
+
+    const input =
+        document.getElementById(
+            "chat-input"
+        );
+
+    const text =
+        input.value.trim();
+
+    if (!text) return;
+
+    addMessage(
+        document.getElementById(
+            "chat-messages"
+        ),
+        "👤 " + text
+    );
+
+    input.value = "";
+
 }
 
 </script>

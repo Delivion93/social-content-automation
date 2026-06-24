@@ -1,7 +1,7 @@
 from services.llm_service import ask
 from schemas.copywriter import CopywriterOutput
 
-import json
+from utils.json_parser import parse_llm_json
 
 def copywriter_node(state):
     """
@@ -65,7 +65,7 @@ Responde ÚNICAMENTE con este JSON válido:
     response = ask(prompt)
 
     try:
-        data = json.loads(response)
+        data = parse_llm_json(response)
         return CopywriterOutput(**data)
 
     except Exception as e:

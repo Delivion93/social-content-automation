@@ -406,15 +406,50 @@ async function sendChatMessage() {
 
     if (!text) return;
 
-    addMessage(
+    const chat =
         document.getElementById(
             "chat-messages"
-        ),
+        );
+
+    addMessage(
+        chat,
         "👤 " + text
     );
 
     input.value = "";
 
+    try {
+
+        const response =
+            await fetch(
+                "/chat",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: text
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        addMessage(
+            chat,
+            "🤖 " + data.response
+        );
+
+    } catch (error) {
+
+        addMessage(
+            chat,
+            "🤖 Error"
+        );
+    }
 }
 
 const canvas =

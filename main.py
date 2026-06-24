@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from fastapi import HTTPException
 from graph.content_graph import graph
 from validators.brands import KNOWN_BRANDS
+from schemas.chat import ChatRequest
+from agents.editor_agent import edit_campaign
 
 
 class GenerateRequest(BaseModel):
@@ -14,6 +16,7 @@ class GenerateRequest(BaseModel):
 
 
 app = FastAPI()
+current_campaign = {}
 
 templates = Jinja2Templates(directory="templates")
 
@@ -41,6 +44,8 @@ async def generate_content(data: GenerateRequest):
             detail="Existing brands are not allowed."
         )
 
+    global current_campaign
+
     result = graph.invoke(
         {
             "product": data.product,
@@ -50,4 +55,19 @@ async def generate_content(data: GenerateRequest):
         }
     )
 
+    current_campaign = result
+
     return result
+@app.post("/chat")
+async def chat(request: ChatRequest):
+
+    global current_campaign
+
+    response = edit_campaign(
+        campaign=current_campaign,
+        user_message=request.message
+    )
+
+    return {
+        "response": response
+    }

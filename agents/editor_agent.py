@@ -1,6 +1,9 @@
 from services.llm_service import ask
 from schemas.editor import CampaignEdition
-from services.rag_service import load_rules
+
+from langchain_ollama import OllamaEmbeddings
+from langchain_chroma import Chroma
+
 import json
 
 def edit_campaign(
@@ -8,7 +11,23 @@ def edit_campaign(
     user_message: str
     ) -> CampaignEdition:
 
-    rules = load_rules()
+    vector_db = Chroma(
+        persist_directory="vectorstore",
+        embedding_function=
+        OllamaEmbeddings(
+            model="nomic-embed-text"
+        )
+    )
+
+    docs = vector_db.similarity_search(
+        user_message,
+        k=5
+    )
+
+    retrieved_context = "\n\n".join(
+        doc.page_content
+        for doc in docs
+    )
 
     prompt = f"""
     Eres un Campaign Editor Agent.
@@ -17,19 +36,9 @@ def edit_campaign(
 
     Tu única función es modificar campañas.
 
-    Debes respetar siempre las siguientes normas.
+    Normas recuperadas mediante RAG:
 
-    INSTAGRAM:
-
-    {rules["instagram"]}
-
-    FACEBOOK:
-
-    {rules["facebook"]}
-
-    LINKEDIN:
-
-    {rules["linkedin"]}
+    {retrieved_context}
 
     Campaña actual:
 

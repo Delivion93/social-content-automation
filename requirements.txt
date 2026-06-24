@@ -3,6 +3,7 @@ uvicorn
 
 langchain
 chromadb
+langchain-chroma
 langchain-community
 langchain-ollama
 langgraph

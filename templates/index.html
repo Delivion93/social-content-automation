@@ -255,6 +255,9 @@ async function generateCampaign() {
         "loading-screen"
     ).style.display = "block";
 
+    setTimeout(() => {
+        resizeCanvas();
+    }, 50);
     try {
 
         const response = await fetch(
@@ -281,6 +284,10 @@ async function generateCampaign() {
 
             window.generatedCampaign = data;
 
+            document.querySelector(
+                ".loader"
+            ).style.display = "none";
+            
             document.getElementById(
                 "loading-title"
             ).innerText =
@@ -436,58 +443,57 @@ function resizeCanvas() {
     );
 }
 
-resizeCanvas();
 
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
-
-let drawing = false;
-
-let lastX = 0;
-let lastY = 0;
-
-let hue = 0;
-
-ctx.lineWidth = 6;
-ctx.lineCap = "round";
-
-function startDraw(e) {
-
-    drawing = true;
-
-    lastX = e.offsetX;
-    lastY = e.offsetY;
-}
-
-function draw(e) {
-
-    if (!drawing) return;
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        lastX,
-        lastY
+    window.addEventListener(
+        "resize",
+        resizeCanvas
     );
 
-    ctx.lineTo(
-        e.offsetX,
-        e.offsetY
-    );
+        let drawing = false;
 
-    ctx.strokeStyle =
-        `hsl(${hue},100%,50%)`;
+        let lastX = 0;
+        let lastY = 0;
 
-    ctx.stroke();
+        let hue = 0;
 
-    hue =
-        (hue + 2) % 360;
+        ctx.lineWidth = 6;
+        ctx.lineCap = "round";
 
-    lastX = e.offsetX;
-    lastY = e.offsetY;
-}
+    function startDraw(e) {
+
+        drawing = true;
+
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+    }
+
+    function draw(e) {
+
+        if (!drawing) return;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            lastX,
+            lastY
+        );
+
+        ctx.lineTo(
+            e.offsetX,
+            e.offsetY
+        );
+
+        ctx.strokeStyle =
+            `hsl(${hue},100%,50%)`;
+
+        ctx.stroke();
+
+        hue =
+            (hue + 2) % 360;
+
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+    }
 
 
 function stopDraw() {

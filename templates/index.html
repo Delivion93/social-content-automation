@@ -438,10 +438,46 @@ async function sendChatMessage() {
         const data =
             await response.json();
 
-        addMessage(
-            chat,
-            "🤖 " + data.response
-        );
+       addMessage(
+    chat,
+    `
+🤖 Campaign Updated
+
+📢 Campaign Name
+
+${data.campaign.campaign_name}
+
+────────────────────
+
+🎯 Concept
+
+${data.campaign.concept}
+
+────────────────────
+
+🎨 Tone
+
+${data.campaign.tone}
+
+────────────────────
+
+📸 Instagram
+
+${data.campaign.instagram_post}
+
+────────────────────
+
+📘 Facebook
+
+${data.campaign.facebook_post}
+
+────────────────────
+
+💼 LinkedIn
+
+${data.campaign.linkedin_post}
+`
+);
 
     } catch (error) {
 

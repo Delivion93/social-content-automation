@@ -63,11 +63,15 @@ async def chat(request: ChatRequest):
 
     global current_campaign
 
-    response = edit_campaign(
+    edited_campaign = edit_campaign(
         campaign=current_campaign,
         user_message=request.message
     )
 
+    current_campaign.update(
+        edited_campaign.model_dump()
+    )
+
     return {
-        "response": response
+        "campaign": current_campaign
     }

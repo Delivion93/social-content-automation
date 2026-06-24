@@ -1,33 +1,54 @@
 from services.llm_service import ask
-
+from schemas.editor import CampaignEdition
+import json
 
 def edit_campaign(
     campaign: dict,
     user_message: str
-):
+    ) -> CampaignEdition:
+
 
     prompt = f"""
-Eres un Campaign Editor Agent.
+    Eres un Campaign Editor Agent.
 
-NO eres un asistente general.
+    NO eres un asistente general.
 
-Tu única función es modificar campañas
-de marketing ya generadas.
+    Tu única función es modificar campañas
+    de marketing existentes.
 
-Si el usuario hace preguntas fuera del
-contexto de marketing responde:
+    Campaña actual:
 
-"Solo puedo ayudarte a modificar la campaña actual."
+    {campaign}
 
-Campaña actual:
+    Solicitud del usuario:
 
-{campaign}
+    {user_message}
 
-Solicitud del usuario:
+    Devuelve SIEMPRE una campaña completa.
 
-{user_message}
+    Responde ÚNICAMENTE con JSON válido.
 
-Devuelve una respuesta útil.
-"""
+    Formato:
 
-    return ask(prompt)
+    {{
+      "campaign_name": "...",
+      "concept": "...",
+      "tone": "...",
+      "instagram_post": "...",
+      "facebook_post": "...",
+      "linkedin_post": "..."
+    }}
+    """
+
+    response = ask(prompt)
+
+    response = (
+        response
+        .replace("```json", "")
+        .replace("```", "")
+        .strip()
+    )
+
+    data = json.loads(response)
+
+    return CampaignEdition(**data)

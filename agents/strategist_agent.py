@@ -1,7 +1,7 @@
 from graph.state import ContentState
 from services.llm_service import ask
 from pydantic import BaseModel
-import json
+from utils.json_parser import parse_llm_json
 
 
 # --------- Pydantic Output Contract ---------
@@ -119,7 +119,7 @@ Responde ÚNICAMENTE con este JSON válido, sin explicaciones, sin markdown, sin
     response = ask(prompt)
 
     try:
-        data = json.loads(response)
+        data = parse_llm_json(response)
         return StrategicConcept(**data)
     except Exception as e:
         raise ValueError(f"Error parsing LLM response: {response}") from e

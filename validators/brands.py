@@ -1,5 +1,6 @@
 KNOWN_BRANDS = {
     "coca-cola",
+    "coca cola",
     "pepsi",
     "fanta",
     "sprite",

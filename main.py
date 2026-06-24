@@ -7,7 +7,7 @@ from graph.content_graph import graph
 from validators.brands import KNOWN_BRANDS
 from schemas.chat import ChatRequest
 from agents.editor_agent import edit_campaign
-
+from fastapi.staticfiles import StaticFiles
 
 class GenerateRequest(BaseModel):
     product: str
@@ -17,6 +17,11 @@ class GenerateRequest(BaseModel):
 
 app = FastAPI()
 current_campaign = {}
+app.mount(
+    "/static",
+    StaticFiles(directory="static"),
+    name="static"
+)
 
 templates = Jinja2Templates(directory="templates")
 

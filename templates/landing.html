@@ -22,11 +22,22 @@ body{
 
 .hero{
     min-height:100vh;
+
+    background:
+    linear-gradient(
+        135deg,
+        #121212,
+        #1d4ed8,
+        #121212
+    );
+
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
+
     text-align:center;
+
     padding:40px;
 }
 
@@ -77,6 +88,18 @@ body{
     background:#1e1e1e;
     padding:25px;
     border-radius:15px;
+    transition:0.3s;
+    cursor:pointer;
+}
+
+.card:hover{
+
+    transform:
+        translateY(-8px);
+
+    box-shadow:
+        0 10px 25px
+        rgba(37,99,235,.35);
 }
 
 .workflow{
@@ -104,6 +127,11 @@ body{
     color:#777;
 }
 
+.logo{
+    width:1200px;
+    margin-bottom:30px;
+}
+
 </style>
 </head>
 
@@ -111,6 +139,11 @@ body{
 
 <section class="hero">
 
+    <img
+    src="/static/images/team_logo.jpeg"
+    class="logo"
+    alt="Team Logo"
+    />
     <h1>🤖 Social Content Agents</h1>
 
     <p>
@@ -132,7 +165,7 @@ body{
     <div class="cards">
 
         <div class="card">
-            <h3>Strategist Agent</h3>
+            <h3>🧠 Strategist Agent</h3>
             <p>
                 Genera el nombre de campaña,
                 concepto y tono de comunicación.
@@ -140,7 +173,7 @@ body{
         </div>
 
         <div class="card">
-            <h3>Copywriter Agent</h3>
+            <h3>✍️ Copywriter Agent</h3>
             <p>
                 Crea contenido optimizado para
                 Instagram, Facebook y LinkedIn.
@@ -148,10 +181,17 @@ body{
         </div>
 
         <div class="card">
-            <h3>Compliance Agent</h3>
+            <h3>🛡️ Compliance Agent</h3>
             <p>
                 Valida automáticamente el contenido
                 generado antes de publicarlo.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>📚 RAG Editor Agent</h3>
+            <p>
+                Content is adjusted according to platform rules.
             </p>
         </div>
 
@@ -202,6 +242,22 @@ body{
         <span>Pydantic</span>
 
     </div>
+
+</section>
+
+<section class="section">
+
+<h2>Ready to Create Your Campaign?</h2>
+
+<div style="text-align:center">
+
+<a href="/generate" class="btn">
+
+Start Now
+
+</a>
+
+</div>
 
 </section>
 

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantalla de Carga Interactiva</title>
+    <style>
+        /* Estilos para que el lienzo ocupe toda la pantalla y sea negro */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: sans-serif;
+        }
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        /* Un texto simple de carga flotando encima */
+        .loading-text {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: white;
+            font-size: 24px;
+            pointer-events: none; /* Hace que el texto no interfiera con el clic */
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loading-text">Cargando... Dibuja algo mientras esperas</div>
+    <canvas id="canvasCarga"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvasCarga');
+        const ctx = canvas.getContext('2d');
+
+        // 1. Ajustar el lienzo al tamaño de la pantalla
+        function ajustarPantalla() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            // Al redimensionar se borra el canvas, lo pintamos de negro inicial
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        ajustarPantalla();
+        window.addEventListener('resize', ajustarPantalla);
+
+        // Variables de estado del dibujo
+        let dibujando = false;
+        let ultimaX = 0;
+        let ultimaY = 0;
+        let tonoColor = 0; // Para el efecto arcoíris
+
+        // Configuración del pincel
+        ctx.lineWidth = 8;           // Grosor de la línea
+        ctx.lineCap = 'round';       // Bordes redondeados para que se vea suave
+        ctx.lineJoin = 'round';      // Uniones suavizadas
+
+        // 2. Funciones para dibujar
+        function empezarDibujo(e) {
+            dibujando = true;
+            // Guardamos la posición inicial (soporta ratón y pantallas táctiles)
+            const pos = obtenerPosicion(e);
+            ultimaX = pos.x;
+            ultimaY = pos.y;
+        }
+
+        function dibujar(e) {
+            if (!dibujando) return;
+
+            const pos = obtenerPosicion(e);
+
+            ctx.beginPath();
+            ctx.moveTo(ultimaX, ultimaY); // Desde dónde venía el ratón
+            ctx.lineTo(pos.x, pos.y);     // Hacia dónde va el ratón
+            
+            // Efecto Arcoíris: va cambiando el color dinámicamente
+            ctx.strokeStyle = `hsl(${tonoColor}, 100%, 50%)`;
+            tonoColor = (tonoColor + 2) % 360; // Cambia el número 2 para mayor/menor velocidad de color
+
+            ctx.stroke(); // Dibuja la línea
+
+            // Actualizamos la última posición
+            ultimaX = pos.x;
+            ultimaY = pos.y;
+        }
+
+        function detenerDibujo() {
+            dibujando = false;
+        }
+
+        // Función auxiliar para unificar Ratón y Pantalla Táctil (móviles)
+        function obtenerPosicion(e) {
+            let clienteX, clienteY;
+            if (e.touches && e.touches.length > 0) {
+                clienteX = e.touches[0].clientX;
+                clienteY = e.touches[0].clientY;
+            } else {
+                clienteX = e.clientX;
+                clienteY = e.clientY;
+            }
+            return { x: clienteX, y: clienteY };
+        }
+
+        // 3. Eventos del Ratón
+        canvas.addEventListener('mousedown', empezarDibujo);
+        canvas.addEventListener('mousemove', dibujar);
+        window.addEventListener('mouseup', detenerDibujo);
+
+        // 4. Eventos Táctiles (Móviles/Tablets)
+        canvas.addEventListener('touchstart', empezarDibujo);
+        canvas.addEventListener('touchmove', dibujar);
+        window.addEventListener('touchend', detenerDibujo);
+
+        // 5. [Extra] Tecla ESPACIO para borrar el lienzo si se llena
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        });
+    </script>
+</body>
+</html>

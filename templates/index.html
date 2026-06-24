@@ -107,13 +107,63 @@
             color: #ef4444;
             font-weight: bold;
         }
+
+        #form-container {
+            display: block;
+        }
+
+        #loading-screen {
+            display: none;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        #chat-container {
+            display: none;
+            height: 80vh;
+            flex-direction: column;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #333;
+            border-top: 6px solid #2563eb;
+            border-radius: 50%;
+            margin: 20px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
 
-    <div class="card">
+    <div id="form-container" class="card">
 
         <h1>🤖 Social Content Agents</h1>
 
@@ -134,60 +184,38 @@
 
     </div>
 
-    <div id="results" class="card">
-        <h1>Resultado</h1>
+    <div id="loading-screen" class="card">
 
-        <div class="section">
-            <h2>Campaign Name</h2>
-            <div id="campaignName" class="content-box"></div>
-        </div>
+    <h1>🤖 Generando campaña...</h1>
 
-        <div class="section">
-            <h2>Concept</h2>
-            <div id="concept" class="content-box"></div>
-        </div>
+    <div class="loader"></div>
 
-        <div class="section">
-            <h2>Tone</h2>
-            <div id="tone" class="content-box"></div>
-        </div>
+    <p>
+        Nuestros agentes están trabajando...
+    </p>
 
-        <div class="section">
-            <h2>Instagram</h2>
-            <div id="instagram" class="content-box"></div>
-        </div>
+</div>
 
-        <div class="section">
-            <h2>Facebook</h2>
-            <div id="facebook" class="content-box"></div>
-        </div>
+<div id="chat-container" class="card">
 
-        <div class="section">
-            <h2>LinkedIn</h2>
-            <div id="linkedin" class="content-box"></div>
-        </div>
+    <h1>💬 Campaign Assistant</h1>
 
-        <div class="section">
-            <h2>Compliance</h2>
-            <div id="compliance"></div>
-        </div>
+    <div id="chat-messages"></div>
 
-        <div class="section">
-            <h2>Feedback</h2>
-            <div id="feedback" class="content-box"></div>
-        </div>
-
-    </div>
-
+</div>
 </div>
 
 <script>
 
 async function generateCampaign() {
 
-    const loading = document.getElementById("loading");
+    document.getElementById(
+        "form-container"
+    ).style.display = "none";
 
-    loading.innerText = "Generando contenido...";
+    document.getElementById(
+        "loading-screen"
+    ).style.display = "block";
 
     try {
 
@@ -215,11 +243,9 @@ async function generateCampaign() {
 
         showResult(data);
 
-        loading.innerText = "";
-
     } catch (error) {
 
-        loading.innerText = "Error al generar contenido.";
+        alert("Error generating campaign");
 
         console.error(error);
     }
@@ -227,42 +253,75 @@ async function generateCampaign() {
 
 function showResult(data) {
 
-    document.getElementById("results").style.display = "block";
+    document.getElementById(
+        "loading-screen"
+    ).style.display = "none";
 
-    document.getElementById("campaignName").innerText =
-        data.campaign_name;
+    document.getElementById(
+        "chat-container"
+    ).style.display = "block";
 
-    document.getElementById("concept").innerText =
-        data.concept;
+    const chat =
+        document.getElementById(
+            "chat-messages"
+        );
 
-    document.getElementById("tone").innerText =
-        data.tone;
+    chat.innerHTML = "";
 
-    document.getElementById("instagram").innerText =
-        data.instagram_post;
+    addMessage(
+        chat,
+        "📢 Campaign Name\n\n" +
+        data.campaign_name
+    );
 
-    document.getElementById("facebook").innerText =
-        data.facebook_post;
+    addMessage(
+        chat,
+        "🎯 Concept\n\n" +
+        data.concept
+    );
 
-    document.getElementById("linkedin").innerText =
-        data.linkedin_post;
+    addMessage(
+        chat,
+        "🎨 Tone\n\n" +
+        data.tone
+    );
 
-    document.getElementById("feedback").innerText =
-        data.feedback?.join("\n") || "Sin feedback";
+    addMessage(
+        chat,
+        "📸 Instagram\n\n" +
+        data.instagram_post
+    );
 
-    const compliance =
-        document.getElementById("compliance");
+    addMessage(
+        chat,
+        "📘 Facebook\n\n" +
+        data.facebook_post
+    );
 
-    if (data.approved) {
+    addMessage(
+        chat,
+        "💼 LinkedIn\n\n" +
+        data.linkedin_post
+    );
 
-        compliance.innerHTML =
-            '<span class="approved">✅ Approved</span>';
+    addMessage(
+        chat,
+        data.approved
+            ? "✅ Compliance Approved"
+            : "❌ Compliance Rejected"
+    );
+}
 
-    } else {
+function addMessage(chat, text) {
 
-        compliance.innerHTML =
-            '<span class="rejected">❌ Rejected</span>';
-    }
+    const msg =
+        document.createElement("div");
+
+    msg.className = "message";
+
+    msg.textContent = text;
+
+    chat.appendChild(msg);
 }
 
 </script>

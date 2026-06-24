@@ -1,271 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Social Content Agents</title>
+    <meta charset="UTF-8">
 
-<style>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
-}
+    <title>Nidochus</title>
 
-body{
-    background:#121212;
-    color:white;
-}
+    <link
+        rel="stylesheet"
+        href="/static/css/landing.css"
+    >
 
-.hero{
-    min-height:100vh;
-
-    background:
-    linear-gradient(
-        135deg,
-        #121212,
-        #1d4ed8,
-        #121212
-    );
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-
-    text-align:center;
-
-    padding:40px;
-}
-
-.hero h1{
-    font-size:4rem;
-    margin-bottom:20px;
-}
-
-.hero p{
-    max-width:700px;
-    font-size:1.2rem;
-    color:#bbb;
-    margin-bottom:40px;
-}
-
-.btn{
-    background:#2563eb;
-    color:white;
-    padding:15px 35px;
-    border-radius:12px;
-    text-decoration:none;
-    font-size:18px;
-    transition:0.3s;
-}
-
-.btn:hover{
-    background:#1d4ed8;
-}
-
-.section{
-    max-width:1200px;
-    margin:auto;
-    padding:80px 30px;
-}
-
-.section h2{
-    text-align:center;
-    margin-bottom:40px;
-}
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-}
-
-.card{
-    background:#1e1e1e;
-    padding:25px;
-    border-radius:15px;
-    transition:0.3s;
-    cursor:pointer;
-}
-
-.card:hover{
-
-    transform:
-        translateY(-8px);
-
-    box-shadow:
-        0 10px 25px
-        rgba(37,99,235,.35);
-}
-
-.workflow{
-    text-align:center;
-    line-height:2;
-    font-size:1.1rem;
-}
-
-.tech{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:15px;
-}
-
-.tech span{
-    background:#1e1e1e;
-    padding:10px 20px;
-    border-radius:10px;
-}
-
-.footer{
-    text-align:center;
-    padding:50px;
-    color:#777;
-}
-
-.logo{
-    width:1200px;
-    margin-bottom:30px;
-}
-
-</style>
 </head>
 
 <body>
 
 <section class="hero">
 
-    <img
-    src="/static/images/team_logo.jpeg"
-    class="logo"
-    alt="Team Logo"
-    />
-    <h1>🤖 Social Content Agents</h1>
+    <div class="hero-overlay"></div>
 
-    <p>
-        Plataforma basada en IA multi-agente para crear campañas completas
-        de marketing en Instagram, Facebook y LinkedIn utilizando LangGraph,
-        Ollama y ChromaDB.
-    </p>
+    <canvas id="networkCanvas"></canvas>
 
-    <a href="/generate" class="btn">
-        Crear Campaña
-    </a>
+    <div class="hero-content">
+<!--        <img-->
+<!--            src="/static/images/team_logo.jpeg"-->
+<!--            class="logo"-->
+<!--        >-->
 
-</section>
+        <div class="slogan">
 
-<section class="section">
+            <span>Nidochus:</span>
 
-    <h2>🚀 AI Agents</h2>
+            Cada agente aporta una pluma,
 
-    <div class="cards">
+            juntos hacen volar tu contenido.
 
-        <div class="card">
-            <h3>🧠 Strategist Agent</h3>
-            <p>
-                Genera el nombre de campaña,
-                concepto y tono de comunicación.
-            </p>
         </div>
 
-        <div class="card">
-            <h3>✍️ Copywriter Agent</h3>
-            <p>
-                Crea contenido optimizado para
-                Instagram, Facebook y LinkedIn.
-            </p>
-        </div>
 
-        <div class="card">
-            <h3>🛡️ Compliance Agent</h3>
-            <p>
-                Valida automáticamente el contenido
-                generado antes de publicarlo.
-            </p>
-        </div>
 
-        <div class="card">
-            <h3>📚 RAG Editor Agent</h3>
-            <p>
-                Content is adjusted according to platform rules.
-            </p>
+        <h1>
+
+            Social Content Agents
+
+        </h1>
+
+        <p>
+
+            Plataforma multi-agente impulsada por IA para crear campañas
+            de contenido para Instagram, Facebook y LinkedIn.
+
+        </p>
+
+        <div class="hero-actions">
+
+            <a href="/generate" class="main-button">
+                Crear Campaña 🚀
+            </a>
+
+            <a href="#agents" class="scroll">
+                ↓
+            </a>
+
         </div>
 
     </div>
 
-</section>
+    <section id="agents">
 
-<section class="section">
-
-    <h2>⚙ Workflow</h2>
-
-    <div class="workflow">
-
-        User Input
-
-        <br>↓<br>
-
-        Strategist Agent
-
-        <br>↓<br>
-
-        Copywriter Agent
-
-        <br>↓<br>
-
-        Compliance Agent
-
-        <br>↓<br>
-
-        Editor Agent + RAG
-
-    </div>
+    </section>
 
 </section>
 
-<section class="section">
-
-    <h2>🛠 Technologies</h2>
-
-    <div class="tech">
-
-        <span>FastAPI</span>
-        <span>LangGraph</span>
-        <span>LangChain</span>
-        <span>Ollama</span>
-        <span>ChromaDB</span>
-        <span>RAG</span>
-        <span>Pydantic</span>
-
-    </div>
-
-</section>
-
-<section class="section">
-
-<h2>Ready to Create Your Campaign?</h2>
-
-<div style="text-align:center">
-
-<a href="/generate" class="btn">
-
-Start Now
-
-</a>
-
-</div>
-
-</section>
-
-<div class="footer">
-
-    Social Content Agents © 2026
-
-</div>
+<script src="/static/js/landing.js"></script>
 
 </body>
+
 </html>

@@ -1,0 +1,285 @@
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+    font-family:
+
+    "Segoe UI",
+
+    sans-serif;
+
+}
+
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+body{
+
+    background:#050816;
+
+    color:white;
+
+}
+
+.hero{
+
+    #networkCanvas{
+
+        position:absolute;
+
+        inset:0;
+
+        width:100%;
+
+        height:100%;
+
+        z-index:1;
+
+    }
+
+    position:relative;
+
+    min-height:100vh;
+
+    overflow:hidden;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+}
+
+.hero::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+    radial-gradient(
+
+        circle at top left,
+
+        rgba(0,119,255,.25),
+
+        transparent 40%
+
+    ),
+
+    radial-gradient(
+
+        circle at bottom right,
+
+        rgba(180,0,255,.25),
+
+        transparent 40%
+
+    ),
+
+    linear-gradient(
+
+        180deg,
+
+        #070b1b,
+
+        #050816
+
+    );
+
+}
+.hero-content{
+
+    position:relative;
+
+    z-index:10;
+
+    width:90%;
+
+    max-width:900px;
+
+}
+.slogan{
+
+    display:inline-block;
+
+    margin-bottom:35px;
+
+    padding:
+
+    14px
+
+    28px;
+
+    border-radius:50px;
+
+    border:
+
+    1px solid
+
+    rgba(90,120,255,.4);
+
+    background:
+
+    rgba(255,255,255,.03);
+
+    backdrop-filter:blur(12px);
+
+    font-size:18px;
+
+}
+
+.slogan span{
+
+    color:#4d8dff;
+
+    font-weight:bold;
+
+}
+.logo{
+
+    width:180px;
+
+    margin-bottom:25px;
+
+}
+
+.hero h1{
+
+    font-size:72px;
+
+    font-weight:800;
+
+    margin-bottom:20px;
+
+    line-height:1.1;
+
+}
+
+.hero p{
+
+    color:#c8d1ff;
+
+    font-size:22px;
+
+    line-height:1.7;
+
+    margin-bottom:45px;
+
+}
+.main-button{
+
+    display:inline-block;
+
+    padding:
+
+    22px
+
+    70px;
+
+    border-radius:18px;
+
+    background:
+
+    linear-gradient(
+
+        90deg,
+
+        #246bff,
+
+        #8b5cf6
+
+    );
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    transition:.35s;
+
+}
+.main-button:hover{
+
+    transform:
+
+    translateY(-4px);
+
+    box-shadow:
+
+    0 0 40px
+
+    rgba(91,114,255,.55);
+
+}
+
+.scroll{
+
+    display:block;
+
+    width:fit-content;
+
+    margin:70px auto 0 auto;
+
+    font-size:42px;
+
+    color:white;
+
+    text-decoration:none;
+
+    cursor:pointer;
+
+    animation:bounce 2s infinite;
+
+    transition:.3s;
+
+}
+
+.scroll:hover{
+
+    color:#7c8cff;
+
+    transform:scale(1.2);
+
+}
+
+@keyframes bounce{
+
+0%,100%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(12px);
+
+}
+
+}
+
+.hero-actions{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+}

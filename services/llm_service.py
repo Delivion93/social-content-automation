@@ -1,8 +1,8 @@
 from langchain_ollama import ChatOllama
 
 llm = ChatOllama(
-    #model="gemma4:e4b",
-    model = "qwen3:8b",
+    model="gemma3:4b",
+    #model = "qwen3:8b",
     #model = "qwen3:4b-instruct",
 
     temperature=0.7,

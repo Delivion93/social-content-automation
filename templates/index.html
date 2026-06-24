@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Content Agents</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #121212;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .container {
+            width: 1000px;
+            max-width: 95%;
+        }
+
+        .card {
+            background: #1e1e1e;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            margin-top: 15px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #2c2c2c;
+            color: white;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .loading {
+            margin-top: 15px;
+            color: #aaa;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .content-box {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+        }
+
+        #results {
+            display: none;
+        }
+
+        .approved {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .rejected {
+            color: #ef4444;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>🤖 Social Content Agents</h1>
+
+        <label>Producto</label>
+        <input type="text" id="product">
+
+        <label>Audiencia</label>
+        <input type="text" id="audience">
+
+        <label>Descripción de marca</label>
+        <textarea id="brandDescription"></textarea>
+
+        <button onclick="generateCampaign()">
+            Generar campaña
+        </button>
+
+        <div id="loading" class="loading"></div>
+
+    </div>
+
+    <div id="results" class="card">
+        <h1>Resultado</h1>
+
+        <div class="section">
+            <h2>Campaign Name</h2>
+            <div id="campaignName" class="content-box"></div>
+        </div>
+
+        <div class="section">
+            <h2>Concept</h2>
+            <div id="concept" class="content-box"></div>
+        </div>
+
+        <div class="section">
+            <h2>Tone</h2>
+            <div id="tone" class="content-box"></div>
+        </div>
+
+        <div class="section">
+            <h2>Instagram</h2>
+            <div id="instagram" class="content-box"></div>
+        </div>
+
+        <div class="section">
+            <h2>Facebook</h2>
+            <div id="facebook" class="content-box"></div>
+        </div>
+
+        <div class="section">
+            <h2>LinkedIn</h2>
+            <div id="linkedin" class="content-box"></div>
+        </div>
+
+        <div class="section">
+            <h2>Compliance</h2>
+            <div id="compliance"></div>
+        </div>
+
+        <div class="section">
+            <h2>Feedback</h2>
+            <div id="feedback" class="content-box"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+async function generateCampaign() {
+
+    const loading = document.getElementById("loading");
+
+    loading.innerText = "Generando contenido...";
+
+    try {
+
+        const response = await fetch(
+            "/generate-content",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    product:
+                        document.getElementById("product").value,
+
+                    audience:
+                        document.getElementById("audience").value,
+
+                    brand_description:
+                        document.getElementById("brandDescription").value
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        showResult(data);
+
+        loading.innerText = "";
+
+    } catch (error) {
+
+        loading.innerText = "Error al generar contenido.";
+
+        console.error(error);
+    }
+}
+
+function showResult(data) {
+
+    document.getElementById("results").style.display = "block";
+
+    document.getElementById("campaignName").innerText =
+        data.campaign_name;
+
+    document.getElementById("concept").innerText =
+        data.concept;
+
+    document.getElementById("tone").innerText =
+        data.tone;
+
+    document.getElementById("instagram").innerText =
+        data.instagram_post;
+
+    document.getElementById("facebook").innerText =
+        data.facebook_post;
+
+    document.getElementById("linkedin").innerText =
+        data.linkedin_post;
+
+    document.getElementById("feedback").innerText =
+        data.feedback?.join("\n") || "Sin feedback";
+
+    const compliance =
+        document.getElementById("compliance");
+
+    if (data.approved) {
+
+        compliance.innerHTML =
+            '<span class="approved">✅ Approved</span>';
+
+    } else {
+
+        compliance.innerHTML =
+            '<span class="rejected">❌ Rejected</span>';
+    }
+}
+
+</script>
+
+</body>
+</html>

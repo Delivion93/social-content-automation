@@ -2,6 +2,8 @@ fastapi[standard]
 uvicorn
 
 langchain
+chromadb
+langchain-community
 langchain-ollama
 langgraph
 

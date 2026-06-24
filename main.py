@@ -26,7 +26,16 @@ async def home(request: Request):
 
     return templates.TemplateResponse(
         request=request,
-        name="index.html"
+        name="landing.html"
+    )
+
+
+@app.get("/generate", response_class=HTMLResponse)
+async def generate_page(request: Request):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="generate.html"
     )
 
 

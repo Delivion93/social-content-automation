@@ -4,7 +4,7 @@ async function generateCampaign() {
   document.getElementById("loading-screen").style.display = "block";
 
   setTimeout(() => {
-    resizeCanvas();
+    initializeCanvas();
   }, 50);
   try {
     const response = await fetch("/generate-content", {
@@ -164,11 +164,34 @@ async function sendChatMessage() {
   }
 }
 
-const canvas = document.getElementById("canvasCarga");
+let canvas = null;
+let ctx = null;
 
-const ctx = canvas.getContext("2d");
+function initializeCanvas() {
+  canvas = document.getElementById("canvasCarga");
+
+  if (!canvas) return;
+
+  ctx = canvas.getContext("2d");
+
+  ctx.lineWidth = 6;
+  ctx.lineCap = "round";
+
+  resizeCanvas();
+
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", stopDraw);
+  canvas.addEventListener("mouseleave", stopDraw);
+}
+
+if (canvas) {
+  ctx = canvas.getContext("2d");
+}
 
 function resizeCanvas() {
+  if (!canvas || !ctx) return;
+
   canvas.width = canvas.offsetWidth;
 
   canvas.height = canvas.offsetHeight;

@@ -1,31 +1,133 @@
-# Social Content Agents
+# 🪺 Nidochus
 
-Social Content Agents is a multi-agent AI platform that automates the creation of social media content.
+**Creación inteligente de contenido multiagente para redes sociales mediante Inteligencia Artificial.**
 
-The system orchestrates specialized AI agents, each responsible for a specific stage of the content production pipeline:
+Nidochus es una plataforma basada en una arquitectura multiagente capaz de generar campañas de marketing adaptadas a Instagram, Facebook y LinkedIn. El sistema utiliza modelos LLM locales mediante Ollama, LangGraph para la orquestación de agentes y ChromaDB como base de datos vectorial para implementar RAG (Retrieval-Augmented Generation).
 
-* **Content Strategist Agent** – generates campaign ideas and content concepts.
-* **Copywriter Agent** – creates platform-specific posts for Instagram, Facebook, LinkedIn, and X.
-* **Prompt Designer Agent** – generates optimized prompts for AI image generation models.
-* **Compliance Agent** – reviews content for brand consistency, tone, and policy compliance.
+---
 
-## Features
+# 🚀 Tecnologías utilizadas
 
-* Multi-agent architecture
-* Automated content strategy generation
-* Platform-specific copywriting
-* AI image prompt generation
-* Brand and tone validation
-* Structured agent communication using Pydantic models
-* FastAPI backend integration
+- Python 3.13
+- FastAPI
+- LangGraph
+- LangChain
+- Ollama
+- ChromaDB
+- Docker & Docker Compose
+- HTML, CSS y JavaScript
+- Jinja2
 
-## Tech Stack
+---
 
-* Python
-* FastAPI
-* LangChain
-* OpenAI / Ollama
-* Pydantic
-* Multi-Agent Workflows
+# 📦 Ejecución con Docker
 
-This project was developed as part of an AI Engineering course to explore agent orchestration, prompt engineering, and autonomous content generation workflows.
+## 1. Construir e iniciar los contenedores
+
+```bash
+docker compose up --build
+```
+
+---
+
+## 2. Descargar los modelos de Ollama (solo la primera vez)
+
+Modelo LLM:
+
+```bash
+docker exec -it social-content-automation-ollama-1 ollama pull gemma3:4b
+```
+
+Modelo de embeddings para ChromaDB:
+
+```bash
+docker exec -it social-content-automation-ollama-1 ollama pull nomic-embed-text
+```
+
+---
+
+## 3. Verificar los modelos instalados
+
+```bash
+docker exec -it social-content-automation-ollama-1 ollama list
+```
+
+Deberían aparecer:
+
+```
+gemma3:4b
+nomic-embed-text
+```
+
+---
+
+## 4. Abrir la aplicación
+
+```
+http://localhost:8000
+```
+
+---
+
+# 📁 Arquitectura del proyecto
+
+```
+social-content-automation/
+
+│
+├── agents/
+├── graph/
+├── rag/
+├── schemas/
+├── services/
+├── static/
+├── templates/
+│
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── main.py
+```
+
+---
+
+# 🤖 Arquitectura multiagente
+
+El flujo principal de generación está coordinado mediante LangGraph.
+
+Los agentes implementados son:
+
+- Strategy Agent
+- Copy Agent
+- Image Prompt Agent
+- Compliance Agent
+- Editor Agent (Chat)
+
+---
+
+# 📚 RAG (Retrieval-Augmented Generation)
+
+El Editor Agent utiliza ChromaDB para recuperar automáticamente las normas específicas de cada plataforma antes de modificar una campaña.
+
+Fuentes utilizadas:
+
+- Instagram
+- Facebook
+- LinkedIn
+
+---
+
+# 🐳 Docker
+
+La aplicación se ejecuta mediante Docker Compose utilizando dos contenedores:
+
+- FastAPI
+- Ollama
+
+Los modelos descargados se almacenan en un volumen persistente para evitar volver a descargarlos en futuros despliegues.
+
+---
+
+# 👨‍💻 Equipo
+
+Proyecto desarrollado por el equipo **Nidochus** como solución basada en Inteligencia Artificial para la generación automática de contenido para redes sociales.

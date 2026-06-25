@@ -1,13 +1,18 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
 from fastapi import HTTPException
+
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+
+from pydantic import BaseModel
+
 from graph.content_graph import graph
 from validators.brands import KNOWN_BRANDS
 from schemas.chat import ChatRequest
 from agents.editor_agent import edit_campaign
-from fastapi.staticfiles import StaticFiles
+from agents.reception_agent import detect_user_intent
+
 
 class GenerateRequest(BaseModel):
     product: str
@@ -72,10 +77,23 @@ async def generate_content(data: GenerateRequest):
     current_campaign = result
 
     return result
+
+
 @app.post("/chat")
 async def chat(request: ChatRequest):
 
     global current_campaign
+
+    reception = detect_user_intent(
+        request.message
+    )
+
+    if reception.intent == "GENERAL":
+
+        return {
+            "status": "GENERAL",
+            "message": reception.message
+        }
 
     edited_campaign = edit_campaign(
         campaign=current_campaign,
@@ -87,5 +105,7 @@ async def chat(request: ChatRequest):
     )
 
     return {
+        "status": "EDIT",
+        "message": reception.message,
         "campaign": current_campaign
     }

@@ -1,11 +1,23 @@
 async function generateCampaign() {
-  document.getElementById("form-container").style.display = "none";
+  const form = document.getElementById("form-container");
+  const loading = document.getElementById("loading-screen");
 
-  document.getElementById("loading-screen").style.display = "block";
+  form.classList.remove("screen-visible");
+  form.classList.add("screen-hidden");
 
   setTimeout(() => {
-    initializeCanvas();
-  }, 50);
+    form.style.display = "none";
+
+    loading.style.display = "block";
+
+    requestAnimationFrame(() => {
+      loading.classList.remove("screen-hidden");
+      loading.classList.add("screen-visible");
+
+      initializeCanvas();
+    });
+  }, 450);
+
   try {
     const response = await fetch("/generate-content", {
       method: "POST",
@@ -41,9 +53,23 @@ async function generateCampaign() {
 }
 
 function showResult(data) {
-  document.getElementById("loading-screen").style.display = "none";
+  const loading = document.getElementById("loading-screen");
+  const chatContainer = document.getElementById("chat-container");
 
-  document.getElementById("chat-container").style.display = "flex";
+  loading.classList.remove("screen-visible");
+  loading.classList.add("screen-hidden");
+
+  setTimeout(() => {
+    loading.style.display = "none";
+
+    chatContainer.style.display = "flex";
+    initializeChat();
+
+    requestAnimationFrame(() => {
+      chatContainer.classList.remove("screen-hidden");
+      chatContainer.classList.add("screen-visible");
+    });
+  }, 450);
 
   const chat = document.getElementById("chat-messages");
 
@@ -101,6 +127,12 @@ function addMessage(chat, text) {
 
   msg.className = "message";
 
+  if (text.startsWith("👤")) {
+    msg.classList.add("user-message");
+  } else {
+    msg.classList.add("assistant-message");
+  }
+
   msg.textContent = text;
 
   chat.appendChild(msg);
@@ -118,6 +150,26 @@ async function sendChatMessage() {
   const chat = document.getElementById("chat-messages");
 
   addMessage(chat, "👤 " + text);
+
+  const typing = document.createElement("div");
+
+  typing.className = "message assistant-message";
+
+  typing.id = "typing-indicator";
+
+  typing.innerHTML = `
+🤖 Procesando...
+
+<div class="typing">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+`;
+
+  chat.appendChild(typing);
+
+  chat.scrollTop = chat.scrollHeight;
 
   input.value = "";
 
@@ -137,6 +189,7 @@ async function sendChatMessage() {
     }
 
     const data = await response.json();
+    document.getElementById("typing-indicator")?.remove();
 
     // ===========================
     // Reception Agent
@@ -159,7 +212,7 @@ async function sendChatMessage() {
     showResult(data.campaign);
   } catch (error) {
     console.error(error);
-
+    document.getElementById("typing-indicator")?.remove();
     addMessage(chat, "🤖 Error: " + error.message);
   }
 }
@@ -185,10 +238,6 @@ function initializeCanvas() {
   canvas.addEventListener("mouseleave", stopDraw);
 }
 
-if (canvas) {
-  ctx = canvas.getContext("2d");
-}
-
 function resizeCanvas() {
   if (!canvas || !ctx) return;
 
@@ -209,9 +258,6 @@ let lastX = 0;
 let lastY = 0;
 
 let hue = 0;
-
-ctx.lineWidth = 6;
-ctx.lineCap = "round";
 
 function startDraw(e) {
   drawing = true;
@@ -243,10 +289,16 @@ function stopDraw() {
   drawing = false;
 }
 
-canvas.addEventListener("mousedown", startDraw);
+function initializeChat() {
+  const input = document.getElementById("chat-input");
 
-canvas.addEventListener("mousemove", draw);
+  if (!input) return;
 
-canvas.addEventListener("mouseup", stopDraw);
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
 
-canvas.addEventListener("mouseleave", stopDraw);
+      sendChatMessage();
+    }
+  });
+}

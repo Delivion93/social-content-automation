@@ -1,246 +1,435 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Social Content Agents</title>
     <script src="/static/js/generate.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background: #121212;
+        color: white;
+
+        min-height: 100vh;
+
+        display: flex;
+
+        justify-content: center;
+        align-items: center;
+
+        padding: 20px;
+      }
+
+      .container {
+        width: min(1200px, 95vw);
+
+        height: calc(100vh - 40px);
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+      }
+
+      .card {
+        background: #1e1e1e;
+
+        border-radius: 18px;
+
+        padding: 35px;
+
+        margin-bottom: 20px;
+
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+      }
+
+      h1 {
+        margin-bottom: 30px;
+
+        text-align: center;
+
+        font-size: 2.2rem;
+        font-weight: 700;
+      }
+
+      h2 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        margin-top: 15px;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background: #2c2c2c;
+        color: white;
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      button {
+        margin-top: 20px;
+        padding: 15px 24px;
+
+        border: none;
+        border-radius: 10px;
+
+        background: #2563eb;
+        color: white;
+
+        cursor: pointer;
+
+        font-size: 16px;
+        font-weight: 600;
+
+        transition: 0.25s;
+      }
+
+      input,
+      textarea {
+        transition: 0.25s;
+      }
+
+      input:focus,
+      textarea:focus {
+        outline: none;
+
+        box-shadow: 0 0 0 2px #2563eb;
+      }
+
+      button:hover {
+        background: #1d4ed8;
+      }
+
+      .generate-btn {
+        width: 100%;
+      }
+
+      .loading {
+        margin-top: 15px;
+        color: #aaa;
+      }
+
+      #form-container {
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        min-height: 70vh;
+      }
+
+      #loading-screen {
+        display: none;
+        text-align: center;
+        padding: 80px 20px;
+      }
+
+      #chat-container {
+        display: none;
+        height: 95vh;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .loader {
+        width: 60px;
+        height: 60px;
+        border: 6px solid #333;
+        border-top: 6px solid #2563eb;
+        border-radius: 50%;
+        margin: 20px auto;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
         }
 
-        body {
-            background: #121212;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      #chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
+        padding: 20px;
+      }
+
+      .message {
+        background: #2a2a2a;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+
+        width: 100%;
+      }
+
+      .chat-input-area {
+        display: flex;
+        gap: 10px;
+        padding: 15px;
+        border-top: 1px solid #333;
+        flex-shrink: 0;
+      }
+
+      #chat-input {
+        flex: 1;
+      }
+      #drawing-area {
+        margin-top: 30px;
+        height: 400px;
+        border-radius: 15px;
+        overflow: hidden;
+        background: black;
+      }
+
+      #canvasCarga {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      #view-results-btn {
+        margin-top: 20px;
+        display: none;
+      }
+      .subtitle {
+        text-align: center;
+        color: #b5b5b5;
+        margin-bottom: 30px;
+        font-size: 15px;
+      }
+
+      .feature-chips {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 30px;
+      }
+
+      .chip {
+        background: #2b2b2b;
+        border: 1px solid #3a3a3a;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 14px;
+        color: #ddd;
+
+        transition: 0.25s;
+      }
+
+      .chip:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+      }
+      .screen-hidden {
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: none;
+
+        transition:
+          opacity 0.45s ease,
+          transform 0.45s ease;
+      }
+
+      .screen-visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+
+        transition:
+          opacity 0.45s ease,
+          transform 0.45s ease;
+      }
+      .message {
+        background: #2a2a2a;
+
+        padding: 15px;
+
+        border-radius: 12px;
+
+        margin-bottom: 15px;
+
+        white-space: pre-wrap;
+
+        width: 100%;
+
+        animation: popMessage 0.25s ease;
+      }
+
+      @keyframes popMessage {
+        from {
+          opacity: 0;
+
+          transform: scale(0.9) translateY(10px);
         }
 
-        .container {
-            width: 1200px;
-            max-width: 95%;
+        to {
+          opacity: 1;
+
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .user-message {
+        margin-left: auto;
+
+        width: fit-content;
+
+        max-width: 75%;
+
+        background: #2563eb;
+      }
+
+      .assistant-message {
+        margin-right: auto;
+
+        max-width: 90%;
+      }
+      .typing {
+        display: flex;
+
+        gap: 6px;
+
+        align-items: center;
+      }
+
+      .typing span {
+        width: 8px;
+        height: 8px;
+
+        border-radius: 50%;
+
+        background: #fff;
+
+        animation: bounce 1.2s infinite;
+      }
+
+      .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes bounce {
+        0%,
+        80%,
+        100% {
+          transform: scale(0);
+
+          opacity: 0.3;
         }
 
-        .card {
-            background: #1e1e1e;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
+        40% {
+          transform: scale(1);
 
-        h1 {
-            margin-bottom: 20px;
+          opacity: 1;
         }
-
-        h2 {
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            margin-top: 15px;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: #2c2c2c;
-            color: white;
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            background: #2563eb;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #1d4ed8;
-        }
-
-        .loading {
-            margin-top: 15px;
-            color: #aaa;
-        }
-
-        #form-container {
-            display: block;
-        }
-
-        #loading-screen {
-            display: none;
-            text-align: center;
-            padding: 80px 20px;
-        }
-
-       #chat-container {
-            display: none;
-            height: 95vh;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .loader {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #333;
-            border-top: 6px solid #2563eb;
-            border-radius: 50%;
-            margin: 20px auto;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        #chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            min-height: 0;
-            padding: 20px;
-        }
-
-        .message {
-            background: #2a2a2a;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            white-space: pre-wrap;
-
-            width: 100%;
-        }
-
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-            padding: 15px;
-            border-top: 1px solid #333;
-            flex-shrink: 0;
-        }
-
-        #chat-input {
-            flex: 1;
-        }
-        #drawing-area {
-            margin-top: 30px;
-            height: 400px;
-            border-radius: 15px;
-            overflow: hidden;
-            background: black;
-        }
-
-        #canvasCarga {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        #view-results-btn {
-            margin-top: 20px;
-            display: none;
-        }
+      }
     </style>
-</head>
-<body>
-
-<div class="container">
-
-    <div id="form-container" class="card">
-
+  </head>
+  <body>
+    <div class="container">
+      <div id="form-container" class="card screen-visible">
         <h1>🤖 Social Content Agents</h1>
 
+        <p class="subtitle">
+          Generación inteligente de campañas mediante un sistema Multi-Agent con
+          IA
+        </p>
+
+        <div class="feature-chips">
+          <div class="chip">🎯 Concept</div>
+
+          <div class="chip">📸 Instagram</div>
+
+          <div class="chip">📘 Facebook</div>
+
+          <div class="chip">💼 LinkedIn</div>
+
+          <div class="chip">🛡 Compliance</div>
+
+          <div class="chip">🤖 AI Agents</div>
+        </div>
         <label>Producto</label>
-        <input type="text" id="product">
+        <input type="text" id="product" />
 
         <label>Audiencia</label>
-        <input type="text" id="audience">
+        <input type="text" id="audience" />
 
         <label>Descripción de marca</label>
         <textarea id="brandDescription"></textarea>
 
-        <button onclick="generateCampaign()">
-            Generar campaña
+        <button class="generate-btn" onclick="generateCampaign()">
+          Generar campaña
         </button>
 
         <div id="loading" class="loading"></div>
-
-    </div>
-
-    <div id="loading-screen" class="card">
-
-        <h1 id="loading-title">
-            🤖 Generando campaña...
-        </h1>
+      </div>
+      <div id="loading-screen" class="card screen-hidden">
+        <h1 id="loading-title">🤖 Generando campaña...</h1>
 
         <div class="loader"></div>
 
-        <p id="loading-subtitle">
-            Nuestros agentes están trabajando...
+        <p id="loading-subtitle">Nuestros agentes están trabajando...</p>
+        <p id="image-text">
+          Puedes dibujar en el campo de abajo mientras esperas el resultado ;)
         </p>
 
         <button
-            id="view-results-btn"
-            onclick="showGeneratedResults()"
-            style="display:none"
+          id="view-results-btn"
+          onclick="showGeneratedResults()"
+          style="display: none"
         >
-            Ver resultados
+          Ver resultados
         </button>
 
         <div id="drawing-area">
-
-            <canvas id="canvasCarga"></canvas>
-
+          <canvas id="canvasCarga"></canvas>
         </div>
+      </div>
+      <div id="chat-container" class="card screen-hidden">
+        <h1>💬 Campaign Assistant</h1>
 
+        <div id="chat-messages"></div>
+
+        <div class="chat-input-area">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Escribe una modificación..."
+          />
+          <button onclick="sendChatMessage()">Enviar</button>
+        </div>
+      </div>
     </div>
-
-<div id="chat-container" class="card">
-
-    <h1>💬 Campaign Assistant</h1>
-
-<div id="chat-messages"></div>
-
-<div class="chat-input-area">
-
-    <input
-        type="text"
-        id="chat-input"
-        placeholder="Escribe una modificación..."
-    >
-
-    <button onclick="sendChatMessage()">
-        Enviar
-    </button>
-
-</div>
-
-</div>
-</div>
-</body>
+  </body>
 </html>

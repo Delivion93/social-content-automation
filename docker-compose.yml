@@ -1,7 +1,6 @@
 services:
 
   app:
-
     build: .
 
     ports:
@@ -11,12 +10,10 @@ services:
       OLLAMA_API_BASE_URL: http://ollama:11434
 
     depends_on:
-      ollama-init:
-        condition: service_completed_successfully
-
+      ollama:
+        condition: service_healthy
 
   ollama:
-
     image: ollama/ollama
 
     ports:
@@ -31,25 +28,6 @@ services:
       timeout: 5s
       retries: 10
 
-
-  ollama-init:
-
-    image: ollama/ollama
-
-    depends_on:
-      ollama:
-        condition: service_healthy
-
-    volumes:
-      - ollama_data:/root/.ollama
-
-    entrypoint:
-      - /bin/sh
-      - -c
-
-    command: |
-      ollama pull gemma3:4b
-
 volumes:
-
   ollama_data:
+

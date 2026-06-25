@@ -4,7 +4,13 @@ from schemas.editor import CampaignEdition
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 
+import os
 import json
+
+OLLAMA_API_BASE_URL = os.getenv(
+    "OLLAMA_API_BASE_URL",
+    os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+)
 
 def edit_campaign(
     campaign: dict,
@@ -13,9 +19,9 @@ def edit_campaign(
 
     vector_db = Chroma(
         persist_directory="vectorstore",
-        embedding_function=
-        OllamaEmbeddings(
-            model="nomic-embed-text"
+        embedding_function=OllamaEmbeddings(
+            model="nomic-embed-text",
+            base_url=OLLAMA_API_BASE_URL
         )
     )
 
